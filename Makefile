@@ -4,7 +4,7 @@ CFLAGS = -Wall -O2
  
 TARGET = memorymappedfiles
 
-SRC = main.c memory_monitor.c mmap_utils.c mmap_copy.c sharememory.c
+SRC = main.c memory_monitor.c mmap_utils.c mmap_copy.c sharememory.c maptable.c
 
 HDR = memory_monitor.h mmap_utils.h mmap_copy.h sharememory.h maptable.h
  
