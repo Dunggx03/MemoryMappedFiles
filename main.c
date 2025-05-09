@@ -7,6 +7,8 @@
 #include <unistd.h>
 
 #include <string.h>
+
+#include <sys/stat.h>  // for stat()
  
 #include "mmap_utils.h"
 
@@ -24,13 +26,35 @@
 
 #define MESSAGE "Hello from mmap!\n"
  
+void init_memory_log_file() {
+
+    struct stat st;
+
+    if (stat("memory_usage.csv", &st) == -1) {
+
+        FILE *fp = fopen("memory_usage.csv", "w");
+
+        if (fp) {
+
+            fprintf(fp, "\"Time\",\"Label\",\"VmSize\",\"VmRSS\",\"RssShmem\",\"VmPTE\"\n");
+
+            fclose(fp);
+
+        }
+
+    }
+
+}
+ 
 int main() {
 
     printf("\n=== [0] Start: MemoryMappedFiles Demo ===\n");
 
+    init_memory_log_file();
+
     log_memory_usage("Start of program");
  
-    // 1. Ghi nội dung vào file bằng mmap
+    // 1. mmap_write
 
     printf("\n=== [1] mmap_write ===\n");
 
@@ -44,7 +68,7 @@ int main() {
 
     log_memory_usage("After mmap_write");
  
-    // 2. Sao chép file qua mmap
+    // 2. mmap_copy_file
 
     printf("\n=== [2] mmap_copy_file ===\n");
 
@@ -58,7 +82,7 @@ int main() {
 
     log_memory_usage("After mmap_copy_file");
  
-    // 3. Tạo file chia sẻ, ánh xạ và ghi nội dung
+    // 3. Shared memory
 
     printf("\n=== [3] Shared Memory Mapping ===\n");
 
@@ -75,7 +99,7 @@ int main() {
     ensure_file_size(fd, FILE_SIZE);
 
     log_memory_usage("Before shared memory map");
-
+ 
     void *map1 = map_file(fd, PROT_READ | PROT_WRITE, MAP_SHARED);
 
     log_memory_usage("After shared memory map");
@@ -88,7 +112,7 @@ int main() {
 
     log_memory_usage("After writing to shared memory");
  
-    // 4. Ghi nhận ánh xạ vào MapTable
+    // 4. MapTable
 
     printf("\n=== [4] MapTable Entry ===\n");
 
@@ -98,7 +122,7 @@ int main() {
 
     log_memory_usage("After adding to MapTable");
  
-    // 5. Dọn dẹp
+    // 5. Cleanup
 
     printf("\n=== [5] Cleanup ===\n");
 
