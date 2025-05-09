@@ -2,7 +2,7 @@ CC = gcc
 
 CFLAGS = -Wall -O2
  
-TARGET = memmap_demo
+TARGET = memorymappedfiles
 
 SRC = main.c memory_monitor.c mmap_utils.c mmap_copy.c sharememory.c
 
